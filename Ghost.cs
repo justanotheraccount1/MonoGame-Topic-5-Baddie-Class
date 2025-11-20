@@ -16,6 +16,8 @@ namespace MonoGame_Topic_5___Baddie_Class
         private Rectangle _location;
         private int _textureIndex;
         private SpriteEffects _direction;
+        private float _animationSpeed;
+        private float _seconds;
 
         public Ghost(List<Texture2D> textures, Rectangle location)
         {
@@ -24,21 +26,59 @@ namespace MonoGame_Topic_5___Baddie_Class
             _location = location;
             _textureIndex = 0;
             _direction = SpriteEffects.None;
+            _animationSpeed = 0.2f;
+            _seconds = 0;
         }
 
-        public void Update(MouseState mouseState)
+        public void Update(GameTime gameTime, MouseState mouseState)
         {
-            if (mouseState.Position.X > _location.X)
+            _speed = Vector2.Zero;
+            if (mouseState.Position.X < _location.X)
+            {
+                _direction = SpriteEffects.FlipHorizontally;
+                _speed.X = -1;
+            }
+            else if (mouseState.Position.X > _location.X)
             {
                 _direction = SpriteEffects.None;
+                _speed.X = 1;
             }
-            else
-                _direction = SpriteEffects.FlipHorizontally;
-
+            if (mouseState.Position.Y < _location.Y)
+            {
+                _speed.Y = -1;
+            }
+            else if (mouseState.Position.Y > _location.Y)
+            {
+                _speed.Y = 1;
+            }
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                _speed = Vector2.Zero;
+                _textureIndex = 0;
+                _seconds = 0f;
+            }
+            if (_speed != Vector2.Zero)
+            {
+                _seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_seconds > _animationSpeed)
+                {
+                    _seconds = 0;
+                    _textureIndex++;
+                    if (_textureIndex >= _textures.Count)
+                    {
+                        _textureIndex = 1;
+                    }
+                }
+            }
+            _location.Offset(_speed);
         }
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_textures[_textureIndex], _location, null, Color.White, 0f, Vector2.Zero, _direction, 1f);
+        }
+        public bool Contains(Point player)
+        {
+            return _location.Contains(player);
         }
     }
 

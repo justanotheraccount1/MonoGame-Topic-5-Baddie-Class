@@ -22,8 +22,10 @@ namespace MonoGame_Topic_5___Baddie_Class
         List<Texture2D> ghostTextures = new List<Texture2D>();
         Texture2D bgTexture, titleTexture, playerTexture, endTexture;
         MouseState mouseState;
+        KeyboardState keyboardState;
         Random generator = new Random();
         Ghost ghost1;
+        List<Ghost> ghosts = new List<Ghost>();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -40,7 +42,10 @@ namespace MonoGame_Topic_5___Baddie_Class
             _graphics.ApplyChanges();
 
             base.Initialize();
-            ghost1 = new Ghost(ghostTextures, new Rectangle(150, 250, 40, 40));
+            for (int i = 0; i < 10; i++)
+            {
+                ghosts.Add(new Ghost(ghostTextures, new Rectangle(generator.Next(window.Width - 40), generator.Next(window.Height - 40), 40, 40)));
+            }
 
 
         }
@@ -64,8 +69,31 @@ namespace MonoGame_Topic_5___Baddie_Class
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
             mouseState = Mouse.GetState();
-            ghost1.Update(mouseState);
+            keyboardState = Keyboard.GetState();
+            if (screen == Screen.Title)
+            {
+                if (keyboardState.IsKeyDown(Keys.Enter))
+                {
+                    screen = Screen.House;
+                }
+            }
+            if (screen == Screen.House)
+            {
+                for (int i = 0; i < ghosts.Count; i++)
+                {
+                    ghosts[i].Update(gameTime, mouseState);
+                    if (ghosts[i].Contains(mouseState.Position))
+                    {
+                        screen = Screen.End;
+                    }
+                }
+                
+            }
+          
+            
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -75,11 +103,28 @@ namespace MonoGame_Topic_5___Baddie_Class
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
-            _spriteBatch.Draw(bgTexture, window, Color.White);
-            ghost1.Draw(_spriteBatch);
+            if (screen == Screen.Title)
+            {
+                _spriteBatch.Draw(titleTexture, window, Color.Red);
+            }
+            else if(screen == Screen.House)
+            {
+                _spriteBatch.Draw(bgTexture, window, Color.White);
+                for (int i = 0; i < ghosts.Count; i++)
+                {
+                    ghosts[i].Draw(_spriteBatch);
+                }
+            }
+            else
+            {
+                _spriteBatch.Draw(endTexture, window, Color.Red);
+            }
 
 
-            _spriteBatch.End();
+
+
+
+                _spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
