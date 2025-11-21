@@ -18,7 +18,7 @@ namespace MonoGame_Topic_5___Baddie_Class
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         Screen screen;
-        Rectangle window, playerRect;
+        Rectangle window;
         List<Texture2D> ghostTextures = new List<Texture2D>();
         Texture2D bgTexture, titleTexture, playerTexture, endTexture;
         MouseState mouseState;
@@ -30,7 +30,7 @@ namespace MonoGame_Topic_5___Baddie_Class
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            IsMouseVisible = false;
         }
 
         protected override void Initialize()
@@ -42,7 +42,7 @@ namespace MonoGame_Topic_5___Baddie_Class
             _graphics.ApplyChanges();
 
             base.Initialize();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
                 ghosts.Add(new Ghost(ghostTextures, new Rectangle(generator.Next(window.Width - 40), generator.Next(window.Height - 40), 40, 40)));
             }
@@ -110,6 +110,7 @@ namespace MonoGame_Topic_5___Baddie_Class
             else if(screen == Screen.House)
             {
                 _spriteBatch.Draw(bgTexture, window, Color.White);
+                _spriteBatch.Draw(playerTexture, new Rectangle(mouseState.X, mouseState.Y, 30, 30), Color.White);
                 for (int i = 0; i < ghosts.Count; i++)
                 {
                     ghosts[i].Draw(_spriteBatch);
@@ -117,7 +118,7 @@ namespace MonoGame_Topic_5___Baddie_Class
             }
             else
             {
-                _spriteBatch.Draw(endTexture, window, Color.Red);
+                _spriteBatch.Draw(endTexture, window, Color.White);
             }
 
 

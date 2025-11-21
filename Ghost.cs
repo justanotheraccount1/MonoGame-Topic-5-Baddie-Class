@@ -18,6 +18,7 @@ namespace MonoGame_Topic_5___Baddie_Class
         private SpriteEffects _direction;
         private float _animationSpeed;
         private float _seconds;
+        private float _opacity;
 
         public Ghost(List<Texture2D> textures, Rectangle location)
         {
@@ -28,11 +29,13 @@ namespace MonoGame_Topic_5___Baddie_Class
             _direction = SpriteEffects.None;
             _animationSpeed = 0.2f;
             _seconds = 0;
+            _opacity = 1;
         }
 
         public void Update(GameTime gameTime, MouseState mouseState)
         {
             _speed = Vector2.Zero;
+            _opacity = 1f;
             if (mouseState.Position.X < _location.X)
             {
                 _direction = SpriteEffects.FlipHorizontally;
@@ -56,6 +59,7 @@ namespace MonoGame_Topic_5___Baddie_Class
                 _speed = Vector2.Zero;
                 _textureIndex = 0;
                 _seconds = 0f;
+                _opacity = 0.3f;
             }
             if (_speed != Vector2.Zero)
             {
@@ -74,11 +78,14 @@ namespace MonoGame_Topic_5___Baddie_Class
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_textures[_textureIndex], _location, null, Color.White, 0f, Vector2.Zero, _direction, 1f);
+            spriteBatch.Draw(_textures[_textureIndex], _location, null, Color.White * _opacity, 0f, Vector2.Zero, _direction, 1f);
         }
         public bool Contains(Point player)
         {
             return _location.Contains(player);
+
+            
+        
         }
     }
 
