@@ -42,7 +42,7 @@ namespace MonoGame_Topic_5___Baddie_Class
             _graphics.ApplyChanges();
 
             base.Initialize();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 21; i++)
             {
                 ghosts.Add(new Ghost(ghostTextures, new Rectangle(generator.Next(window.Width - 40), generator.Next(window.Height - 40), 40, 40)));
             }
@@ -84,7 +84,7 @@ namespace MonoGame_Topic_5___Baddie_Class
                 for (int i = 0; i < ghosts.Count; i++)
                 {
                     ghosts[i].Update(gameTime, mouseState);
-                    if (ghosts[i].Contains(mouseState.Position))
+                    if (ghosts[i].Contains(mouseState.Position) && mouseState.LeftButton == ButtonState.Released)
                     {
                         screen = Screen.End;
                     }
